@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libpq-dev \
+    libonig-dev \
     && docker-php-ext-install pdo pdo_pgsql mbstring opcache \
     && rm -rf /var/lib/apt/lists/*
 
