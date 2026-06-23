@@ -13,7 +13,7 @@ services:
       - key: APP_NAME
         value: "Todo List"
       - key: APP_KEY
-        generateValue: true
+        sync: false
       - key: APP_URL
         value: https://normal-todolist.onrender.com
       - key: DB_CONNECTION

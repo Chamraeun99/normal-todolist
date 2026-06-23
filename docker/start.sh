@@ -7,6 +7,15 @@ if [ -z "$APP_KEY" ]; then
   exit 1
 fi
 
+case "$APP_KEY" in
+  base64:*)
+    ;;
+  *)
+    echo "FATAL: APP_KEY must start with 'base64:'. Run locally: php artisan key:generate --show"
+    exit 1
+    ;;
+esac
+
 if [ -z "$DB_URL" ]; then
   echo "FATAL: DB_URL is not set in Render Environment."
   exit 1
