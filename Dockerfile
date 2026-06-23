@@ -18,8 +18,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 COPY . .
 
 RUN composer dump-autoload --optimize \
-    && mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && mkdir -p storage/framework/{cache/data,sessions,views} storage/logs bootstrap/cache \
+    && chmod -R 777 storage bootstrap/cache
 
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
