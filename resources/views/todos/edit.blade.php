@@ -4,11 +4,18 @@
 
 @section('content')
     <div class="app-brand">
-        <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        <div class="app-icon-wrap">
+            <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        </div>
         <h1 class="page-title">EDIT TASK</h1>
+        <p class="page-subtitle">// task.update()</p>
     </div>
 
-    <div class="edit-card">
+    <div class="glass-card edit-card">
+        <div class="login-terminal">
+            <span>$</span> editing task record...
+        </div>
+
         <form action="{{ route('todos.update', $todo) }}" method="POST">
             @csrf
             @method('PATCH')
@@ -24,7 +31,7 @@
                     autofocus
                 >
                 @error('note')
-                    <div class="field-error">{{ $message }}</div>
+                    <div class="field-error" style="margin: 0.75rem 0 0;">{{ $message }}</div>
                 @enderror
             </div>
 

@@ -3,44 +3,61 @@
 @section('title', 'My To Do List')
 
 @section('content')
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+    <div class="topbar">
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            System Online
+        </div>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="btn-cancel" style="cursor: pointer;">Logout</button>
+            <button type="submit" class="btn-cancel">Logout</button>
         </form>
     </div>
 
     <div class="app-brand">
-        <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        <div class="app-icon-wrap">
+            <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        </div>
         <h1 class="page-title">MY TO DO LIST</h1>
+        <p class="page-subtitle">// task_manager.run()</p>
     </div>
 
-    <form action="{{ route('todos.store') }}" method="POST" class="add-form">
-        @csrf
-        <input
-            type="text"
-            name="note"
-            placeholder="Masukan to do list"
-            value="{{ old('note') }}"
-            autofocus
-            required
-        >
-        <button type="submit" class="btn-save">
-            <span class="btn-spinner"></span>
-            <span class="btn-text">Save</span>
-        </button>
-    </form>
+    <div class="glass-card add-form">
+        <form action="{{ route('todos.store') }}" method="POST" style="display: contents;">
+            @csrf
+            <div class="input-wrap">
+                <input
+                    type="text"
+                    name="note"
+                    placeholder="Masukan to do list"
+                    value="{{ old('note') }}"
+                    autofocus
+                    required
+                >
+            </div>
+            <button type="submit" class="btn-save">
+                <span class="btn-spinner"></span>
+                <span class="btn-text">Save</span>
+            </button>
+        </form>
+    </div>
 
     @if ($errors->any())
         <div class="field-error">{{ $errors->first() }}</div>
     @endif
 
     <div class="stats">
-        <div class="stat-box stat-done">Todo Done : {{ $doneCount }}</div>
-        <div class="stat-box stat-progress">Todo On Progress : {{ $onProgressCount }}</div>
+        <div class="stat-box stat-done">
+            <div class="stat-label">✓ Todo Done</div>
+            <div class="stat-value">{{ $doneCount }}</div>
+        </div>
+        <div class="stat-box stat-progress">
+            <div class="stat-label">⚡ On Progress</div>
+            <div class="stat-value">{{ $onProgressCount }}</div>
+        </div>
     </div>
 
-    <div class="task-table">
+    <div class="glass-card task-table">
         <div class="task-header">
             <span>note</span>
             <span>action</span>
@@ -73,7 +90,10 @@
                 </div>
             </div>
         @empty
-            <div class="empty-state">No tasks yet. Add one above.</div>
+            <div class="empty-state">
+                <div class="robot">🤖</div>
+                <p>// no tasks found — add one above</p>
+            </div>
         @endforelse
     </div>
 @endsection
