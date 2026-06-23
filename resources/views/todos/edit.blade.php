@@ -3,7 +3,10 @@
 @section('title', 'Edit Task')
 
 @section('content')
-    <h1 class="page-title">EDIT TASK</h1>
+    <div class="app-brand">
+        <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        <h1 class="page-title">EDIT TASK</h1>
+    </div>
 
     <div class="edit-card">
         <form action="{{ route('todos.update', $todo) }}" method="POST">
@@ -26,7 +29,10 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-save">Save</button>
+                <button type="submit" class="btn-save">
+                    <span class="btn-spinner"></span>
+                    <span class="btn-text">Save</span>
+                </button>
                 <a href="{{ route('todos.index') }}" class="btn-cancel">Cancel</a>
             </div>
         </form>

@@ -10,7 +10,10 @@
         </form>
     </div>
 
-    <h1 class="page-title">MY TO DO LIST</h1>
+    <div class="app-brand">
+        <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="app-icon">
+        <h1 class="page-title">MY TO DO LIST</h1>
+    </div>
 
     <form action="{{ route('todos.store') }}" method="POST" class="add-form">
         @csrf
@@ -22,7 +25,10 @@
             autofocus
             required
         >
-        <button type="submit" class="btn-save">Save</button>
+        <button type="submit" class="btn-save">
+            <span class="btn-spinner"></span>
+            <span class="btn-text">Save</span>
+        </button>
     </form>
 
     @if ($errors->any())

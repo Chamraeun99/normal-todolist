@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'My To Do List')</title>
+    <title>@yield('title', 'PIC-DO')</title>
+    <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,6 +35,39 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 2rem;
+        }
+
+        .app-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .app-brand .page-title {
+            margin-bottom: 0;
+        }
+
+        .app-icon {
+            width: 88px;
+            height: 88px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.25);
+            object-fit: cover;
+        }
+
+        .loader-icon {
+            width: 96px;
+            height: 96px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 188, 212, 0.3);
+            animation: pulseIcon 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.92; }
         }
 
         .add-form {
@@ -69,6 +104,113 @@
 
         .btn-save:hover {
             opacity: 0.92;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+        }
+
+        .btn-save .btn-spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .btn-save.loading .btn-text { display: none; }
+        .btn-save.loading .btn-spinner { display: inline-block; }
+
+        .btn-cancel:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Page loader */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0fdfa 100%);
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-ring {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0%, #00bcd4 30%, #7c4dff 70%, transparent 100%);
+            animation: spin 1s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-ring::after {
+            content: '';
+            width: 42px;
+            height: 42px;
+            background: #f8fafc;
+            border-radius: 50%;
+        }
+
+        .loader-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .loader-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #00bcd4, #7c4dff);
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+
+        .loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .loader-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Page content fade-in */
+        .page-content {
+            animation: fadeUp 0.5s ease 0.1s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Action button loading */
+        .action-btn.loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .action-btn.loading svg {
+            animation: spin 0.8s linear infinite;
         }
 
         .stats {
@@ -228,8 +370,44 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="page-loader" id="pageLoader" aria-hidden="true">
+        <img src="{{ asset('icon.png') }}" alt="PIC-DO" class="loader-icon">
+        <div class="loader-ring"></div>
+        <div class="loader-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <div class="container page-content">
         @yield('content')
     </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('pageLoader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => loader.remove(), 500);
+            }
+        });
+
+        function setButtonLoading(btn, loading) {
+            if (!btn) return;
+            btn.disabled = loading;
+            btn.classList.toggle('loading', loading);
+        }
+
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                if (e.defaultPrevented) return;
+                if (form.dataset.noLoader !== undefined) return;
+
+                const btn = form.querySelector('.btn-save, .btn-cancel[type="submit"], button[type="submit"]');
+                if (btn) setButtonLoading(btn, true);
+
+                form.querySelectorAll('.action-btn').forEach(b => b.classList.add('loading'));
+            });
+        });
+    </script>
 </body>
 </html>
